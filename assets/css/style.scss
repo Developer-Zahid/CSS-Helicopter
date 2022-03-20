@@ -1,0 +1,193 @@
+// Version 1
+$color-primary: #848484;
+$color-secondary: #242426;
+
+/* 
+// Version 2
+
+    $color-primary: #e01010;
+    $color-secondary: #bfcae6;
+*/
+
+*,
+*::before,
+*::after
+{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    -webkit-tap-highlight-color: transparent;
+}
+
+html{
+    font-size: clamp(7px, 1.5vw ,10px);
+}
+
+%preserve-3d{
+    transform-style: preserve-3d;
+}
+
+%absolute{
+    position: absolute;
+}
+
+body{
+    display: grid;
+    place-items: center;
+    min-height: 100vh;
+    overflow: hidden;
+    perspective: 70rem;
+    @extend %preserve-3d;
+
+    &:active{
+        .helicopter__top__blades{
+            transition-duration: 0;
+            animation-play-state: running;
+        }
+    }
+}
+
+div{
+    outline: 1px solid transparent;
+}
+
+.helicopter{
+    &__case{
+        --size: 4rem;
+        position: relative;
+        width: 22rem;
+        height: 10rem;
+        // background-color: red;
+        transform: rotateX(60deg) rotateZ(45deg);
+        @extend %preserve-3d;
+    }
+    &__body{
+        @extend %absolute;
+        @extend %preserve-3d;
+        inset: 0;
+        &__base,
+        &__base-top{
+            @extend %absolute;
+            bottom: 0;
+            transform-origin: left bottom;
+            width: 100%;
+            background-color: darken($color-primary, $amount: 20);
+        }
+        &__base{
+            transform: rotateX(-90deg);
+            height: var(--size);
+            &-top{
+                transform: translateZ(var(--size)) rotateX(-90deg);
+                height: calc(var(--size) * 2);
+                clip-path: polygon(0 0, calc(100% - (var(--size) * 1.65)) 0, 100% 100%, 0 100%);
+                &__window{
+                    --border: 1.2rem;
+                    @extend %absolute;
+                    @extend %preserve-3d;
+                    background:
+                    linear-gradient(
+                        50deg,
+                        lighten($color-secondary, $amount: 10) 25%,
+                        $color-secondary 25%,
+                        $color-secondary 40%,
+                        lighten($color-secondary, $amount: 10) 40%,
+                        lighten($color-secondary, $amount: 10) 55%,
+                        $color-secondary 55%
+                    );
+                    top: var(--border);
+                    right: var(--border);
+                    bottom: 0;
+                    left: var(--border);
+                    clip-path: polygon(0 0, calc(100% - (var(--size) * 1.65)) 0, 100% 100%, 0 100%);
+                }
+            }
+        }
+        &__front,
+        &__front-window{
+            @extend %absolute;
+            top: 0;
+            right: 0;
+            transform-origin: right top;
+            height: 100%;
+        }
+        &__front{
+            --sudo: 75%;
+            transform: rotateY(90deg);
+            width: var(--size);
+            background: linear-gradient(to right, lighten($color-primary, $amount: 2) var(--sudo), darken($color-primary, $amount: 20) var(--sudo));
+            &-window{
+                transform: translateZ(var(--size)) rotateY(50deg);
+                width: calc(var(--size) * 2.59);
+                background:
+                    linear-gradient(
+                        15deg,
+                        $color-secondary 25%,
+                        lighten($color-secondary, $amount: 10) 25%,
+                        lighten($color-secondary, $amount: 10) 40%,
+                        $color-secondary 40%,
+                        $color-secondary 55%,
+                        lighten($color-secondary, $amount: 10) 55%
+                    );
+                border: 0.8rem solid lighten($color-primary, $amount: 10);
+            }
+        }
+        &__roof{
+            @extend %absolute;
+            width: calc(100% - (var(--size) * 1.66));
+            transform: translateZ(calc((var(--size) * 3) - 1px));
+            height: 100%;
+            background-color: $color-primary;
+        }
+    }
+    &__top{
+        --circle: 4rem;
+        --circle-gap: 0.5rem;
+        @extend %absolute;
+        @extend %preserve-3d;
+        top: 50%;
+        left: 30%;
+        transform: translateX(-50%) translateY(-50%) translateZ(calc((var(--size) * 3) + var(--circle-gap)));
+        width: var(--circle);
+        height: var(--circle);
+        background-color: lighten($color-primary, $amount: 5);
+        border: 0.1rem solid $color-secondary;
+        border-radius: 50%;
+        &::before{
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            transform: translateZ(calc(var(--circle-gap) * -1));
+            width: 120%;
+            height: 120%;
+            background-color: $color-secondary;
+            border-radius: inherit;
+        }
+        &__blades{
+            @extend %absolute;
+            @extend %preserve-3d;
+            inset: 0;
+            transform: rotate(0) translateZ(calc((var(--circle-gap) / 2) * -1));
+            animation: round 0.5s linear infinite;
+            animation-play-state: paused;
+            transition: all 0.5s linear;
+            will-change: transform;
+            @keyframes round {
+                100%{
+                    transform: rotate(360deg) translateZ(calc((var(--circle-gap) / 2) * -1));
+                }
+            }
+            &__item{
+                @extend %absolute;
+                bottom: 50%;
+                left: 50%;
+                transform-origin: left bottom;
+                transform: rotate(calc(var(--i) * 90deg)) translateX(-50%) translateY(calc(var(--circle) / 2));
+                width: calc(var(--circle) / 1.85);
+                height: 20vw;
+                min-height: 20rem;
+                background-color: lighten($color-primary, $amount: 25);
+            }
+        }
+    }
+}
