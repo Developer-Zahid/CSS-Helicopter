@@ -10,8 +10,15 @@
 <body>
     <div class="helicopter">
         <div class="helicopter__case">
-            <div class="helicopter__back"></div>
-            <div class="helicopter__bottom"></div>
+            <div class="helicopter__back">
+                <div class="helicopter__back__layer"></div>
+                <div class="helicopter__back__blades"></div>
+            </div>
+            <div class="helicopter__bottom">
+                <div class="helicopter__bottom__pip-left"></div>
+                <div class="helicopter__bottom__pip-right"></div>
+                <div class="helicopter__bottom__pip"></div>
+            </div>
             <div class="helicopter__body">
                 <div class="helicopter__body__base"></div>
                 <div class="helicopter__body__base-top">
@@ -31,5 +38,12 @@
             </div>
         </div>
     </div>
+
+    <script>
+        /* Window Match Height Function */
+        window.addEventListener("load", function(){
+            document.querySelector("body").style.minHeight = document.querySelector("html").scrollHeight + "px";
+        });
+    </script>
 </body>
 </html>

@@ -19,6 +19,12 @@ $color-secondary: #242426;
     -webkit-tap-highlight-color: transparent;
 }
 
+*::before,
+*::after
+{
+    outline: 1px solid transparent;
+}
+
 html{
     font-size: clamp(7px, 1.5vw ,10px);
 }
@@ -34,15 +40,19 @@ html{
 body{
     display: grid;
     place-items: center;
-    min-height: 100vh;
     overflow: hidden;
     perspective: 70rem;
     @extend %preserve-3d;
 
     &:active{
-        .helicopter__top__blades{
-            transition-duration: 0;
-            animation-play-state: running;
+        .helicopter{
+            &__case{
+                transform: rotateX(55deg) rotateY(10deg) rotateZ(45deg) translateZ(0);
+            }
+            &__top__blades{
+                --rotate: 360deg;
+                animation-duration: 0.4s;
+            }
         }
     }
 }
@@ -57,9 +67,151 @@ div{
         position: relative;
         width: 22rem;
         height: 10rem;
-        // background-color: red;
-        transform: rotateX(60deg) rotateZ(45deg);
+        margin-top: 5rem;
+        margin-left: 15rem;
+        transform: rotateX(60deg) rotateZ(45deg) translateZ(-5rem);
         @extend %preserve-3d;
+        transition: transform .3s linear;
+    }
+    &__back{
+        @extend %absolute;
+        @extend %preserve-3d;
+        left: 0;
+        transform-origin: right center;
+        transform: translateX(-100%) translateZ(calc(var(--size) / 1.2)) rotateY(15deg);
+        width: 100%;
+        height: 100%;
+        &::before,
+        &::after
+        {
+            content: "";
+            @extend %absolute;
+        }
+        &::before{
+            width: 100%;
+            height: calc(var(--size) * 2);
+            background-color: lighten($color-primary, $amount: 6);
+            transform-origin: left bottom;
+            bottom: 0;
+            transform: rotateX(-90deg);
+            clip-path: polygon(0 72%, 100% 0, 100% 100%, 0 100%);
+        }
+        &::after{
+            width: 100%;
+            height: 100%;
+            background-color: lighten($color-primary, $amount: 15);
+            transform-origin: right center;
+            transform: translateZ(calc(var(--size) * 2)) rotateY(-15deg);
+            clip-path: polygon(0 72%, 100% 0, 100% 100%, 0 100%);
+        }
+        &__layer{
+            @extend %absolute;
+            @extend %preserve-3d;
+            width: 30%;
+            height: 3rem;
+            background-color: lighten($color-primary, $amount: 6);
+            bottom: 0;
+            transform-origin: left center;
+            transform: rotateY(-120deg);
+            &::after{
+                @extend %absolute;
+                content: "";
+                width: 100%;
+                height: calc(100% - 1px);
+                top: 0;
+                left: 0;
+                background-color: lighten($color-primary, $amount: 3);
+                transform-origin: right center;
+                transform: rotateY(-20deg);
+            }
+        }
+        &__blades{
+            @extend %absolute;
+            @extend %preserve-3d;
+            width: 1.2rem;
+            height: 1.2rem;
+            bottom: 0;
+            left: 0;
+            transform: rotateX(90deg) translateY(200%) translateX(-200%) translateZ(8px);
+            &::before,
+            &::after
+            {
+                content: "";
+                @extend %absolute;
+                width: 100%;
+                height: 100%;
+                border-radius: 50%;
+                background-color: $color-secondary;
+                box-shadow:
+                    0 0 0 1.3em lighten($color-primary, $amount: 25),
+                    0 0 0 1.8em lighten($color-primary, $amount: 0),
+                    0 0 0 1.85em lighten($color-secondary, $amount: 5),
+            }
+            &::before{
+                transform: translateZ(-2rem)
+            }
+            &::after{
+                transform: translateZ(2rem)
+            }
+        }
+    }
+    &__bottom{
+        --leg-size: 1rem;
+        @extend %absolute;
+        @extend %preserve-3d;
+        left: 10%;
+        width: 80%;
+        height: 100%;
+        &__pip{
+            @extend %absolute;
+            @extend %preserve-3d;
+            bottom: 0;
+            left: 0;
+            transform: translateY(4.9rem) translateZ(calc(var(--leg-size) * -1));
+            width: 100%;
+            height: var(--leg-size);
+            background-color: darken($color-primary, $amount: 20);
+            &::after{
+                @extend %absolute;
+                content: "";
+                top: 0;
+                right: 0;
+                transform-origin: left top;
+                transform: translateX(calc(100% - 4px)) rotateZ(-20deg);
+                width: 10%;
+                height: 100%;
+                background-color: darken($color-primary, $amount: 20);
+            }
+            &-left,
+            &-right
+            {
+                @extend %absolute;
+                @extend %preserve-3d;
+                bottom: 0;
+                transform-origin: center top;
+                transform: translateY(100%) rotateX(-25deg);
+                width: var(--leg-size);
+                height: 2.5rem;
+                background-color: darken($color-primary, $amount: 20);
+                &::before{
+                    @extend %absolute;
+                    content: "";
+                    bottom: 0;
+                    left: 0;
+                    transform-origin: center bottom;
+                    transform: rotateX(135deg) translateY(1px);
+                    width: 100%;
+                    height: 60%;
+                    background-color: darken($color-primary, $amount: 20);
+                }
+            }
+            &-left{
+                left: 10%;
+            }
+            &-right{
+                right: 30%;
+            }
+        }
     }
     &__body{
         @extend %absolute;
@@ -75,7 +227,7 @@ div{
         }
         &__base{
             transform: rotateX(-90deg);
-            height: var(--size);
+            height: calc(var(--size) + 1px);
             &-top{
                 transform: translateZ(var(--size)) rotateX(-90deg);
                 height: calc(var(--size) * 2);
@@ -112,8 +264,8 @@ div{
         }
         &__front{
             --sudo: 75%;
-            transform: rotateY(90deg);
-            width: var(--size);
+            transform: rotateY(90deg) translateY(0.6px);
+            width: calc(var(--size) + 1px);
             background: linear-gradient(to right, lighten($color-primary, $amount: 2) var(--sudo), darken($color-primary, $amount: 20) var(--sudo));
             &-window{
                 transform: translateZ(var(--size)) rotateY(50deg);
@@ -164,17 +316,16 @@ div{
             border-radius: inherit;
         }
         &__blades{
+            --rotate: 90deg;
             @extend %absolute;
             @extend %preserve-3d;
             inset: 0;
             transform: rotate(0) translateZ(calc((var(--circle-gap) / 2) * -1));
-            animation: round 0.5s linear infinite;
-            animation-play-state: paused;
-            transition: all 0.5s linear;
+            animation: round 5s linear infinite;
             will-change: transform;
             @keyframes round {
                 100%{
-                    transform: rotate(360deg) translateZ(calc((var(--circle-gap) / 2) * -1));
+                    transform: rotate(var(--rotate)) translateZ(calc((var(--circle-gap) / 2) * -1));
                 }
             }
             &__item{
@@ -185,8 +336,8 @@ div{
                 transform: rotate(calc(var(--i) * 90deg)) translateX(-50%) translateY(calc(var(--circle) / 2));
                 width: calc(var(--circle) / 1.85);
                 height: 20vw;
-                min-height: 20rem;
-                background-color: lighten($color-primary, $amount: 25);
+                min-height: 22rem;
+                background: linear-gradient(to bottom, $color-secondary 5%,  lighten($color-primary, $amount: 25) 5%, lighten($color-primary, $amount: 25) 100%);
             }
         }
     }
